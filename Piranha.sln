@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28729.10
+# Visual Studio Version 18
+VisualStudioVersion = 18.9.12112.369 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{42A64587-89B5-48F2-84D4-85B97F7847F1}"
 EndProject
@@ -13,16 +13,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Piranha", "core\Piranha\Pir
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Piranha.AspNetCore", "core\Piranha.AspNetCore\Piranha.AspNetCore.csproj", "{EB8EB8B1-5A47-4223-8498-434591BF624B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Piranha.AttributeBuilder", "core\Piranha.AttributeBuilder\Piranha.AttributeBuilder.csproj", "{C510A898-BFE5-4632-AB58-4F8B92CAEE34}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Piranha.Tests", "test\Piranha.Tests\Piranha.Tests.csproj", "{9B19D8C3-E991-41BD-87C9-DE87C44A5BAC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".global", ".global", "{88054E40-5547-4EA5-B75E-D446E8E5A021}"
 	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
 		LICENSE = LICENSE
 		README.md = README.md
-		Directory.Build.targets = Directory.Build.targets
-		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Piranha.Local.FileStorage", "core\Piranha.Local.FileStorage\Piranha.Local.FileStorage.csproj", "{4587BC7F-94D4-4DF5-B46E-4CC0E462FF03}"
@@ -73,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Piranha.Manager.LocalAuth",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Piranha.AspNetCore.Hosting", "core\Piranha.AspNetCore.Hosting\Piranha.AspNetCore.Hosting.csproj", "{8AFA0D7F-BDD9-41E0-BC69-B2B762516F33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Piranha.AttributeBuilder", "core\Piranha.AttributeBuilder\Piranha.AttributeBuilder.csproj", "{3A97A490-C8D8-E248-585D-9D5909360E39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,10 +87,6 @@ Global
 		{EB8EB8B1-5A47-4223-8498-434591BF624B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB8EB8B1-5A47-4223-8498-434591BF624B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB8EB8B1-5A47-4223-8498-434591BF624B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C510A898-BFE5-4632-AB58-4F8B92CAEE34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C510A898-BFE5-4632-AB58-4F8B92CAEE34}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C510A898-BFE5-4632-AB58-4F8B92CAEE34}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C510A898-BFE5-4632-AB58-4F8B92CAEE34}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B19D8C3-E991-41BD-87C9-DE87C44A5BAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B19D8C3-E991-41BD-87C9-DE87C44A5BAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B19D8C3-E991-41BD-87C9-DE87C44A5BAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -183,6 +179,10 @@ Global
 		{8AFA0D7F-BDD9-41E0-BC69-B2B762516F33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AFA0D7F-BDD9-41E0-BC69-B2B762516F33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AFA0D7F-BDD9-41E0-BC69-B2B762516F33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A97A490-C8D8-E248-585D-9D5909360E39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A97A490-C8D8-E248-585D-9D5909360E39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A97A490-C8D8-E248-585D-9D5909360E39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A97A490-C8D8-E248-585D-9D5909360E39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,7 +190,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{7D7EC9B2-BB1B-43FA-BBDC-1AB11D132F07} = {42A64587-89B5-48F2-84D4-85B97F7847F1}
 		{EB8EB8B1-5A47-4223-8498-434591BF624B} = {42A64587-89B5-48F2-84D4-85B97F7847F1}
-		{C510A898-BFE5-4632-AB58-4F8B92CAEE34} = {42A64587-89B5-48F2-84D4-85B97F7847F1}
 		{9B19D8C3-E991-41BD-87C9-DE87C44A5BAC} = {DE1913AC-4AA3-4F66-83F1-615710D8367B}
 		{4587BC7F-94D4-4DF5-B46E-4CC0E462FF03} = {42A64587-89B5-48F2-84D4-85B97F7847F1}
 		{F1B30DE3-5B64-4A20-A41A-C391719E51FD} = {42A64587-89B5-48F2-84D4-85B97F7847F1}
@@ -214,6 +213,7 @@ Global
 		{B91D76C2-5999-418D-81B6-D52EC32836A0} = {9C09AC36-71CF-4E0E-B7CE-C38969A3E123}
 		{A88D6D8D-725E-494F-91CD-440D87BFF21B} = {42A64587-89B5-48F2-84D4-85B97F7847F1}
 		{8AFA0D7F-BDD9-41E0-BC69-B2B762516F33} = {42A64587-89B5-48F2-84D4-85B97F7847F1}
+		{3A97A490-C8D8-E248-585D-9D5909360E39} = {42A64587-89B5-48F2-84D4-85B97F7847F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CF88AA05-D127-4707-8214-A230F0DA569B}
