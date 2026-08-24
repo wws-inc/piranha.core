@@ -8,11 +8,12 @@
  *
  */
 
-using System.ComponentModel.DataAnnotations;
-using System.Text;
 using Piranha.Cache;
 using Piranha.Models;
 using Piranha.Repositories;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Text;
 
 namespace Piranha.Services;
 
@@ -267,10 +268,12 @@ internal sealed class MediaService : IMediaService
             var memStream = new MemoryStream();
             _processor.AutoOrient(stream, memStream);
 
-            // Get the image size
-            _processor.GetSize(memStream, out var width, out var height);
-            model.Width = width;
-            model.Height = height;
+            // Get the image size            
+            _processor.GetSize(stream, (width, height) =>
+            {            
+                model.Width = width;
+                model.Height = height;
+            });
 
             stream = memStream;
         }

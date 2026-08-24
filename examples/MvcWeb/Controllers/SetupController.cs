@@ -43,15 +43,13 @@ public class SetupController : Controller
             var id = Guid.NewGuid();
             images.Add(info.Name, id);
 
-            using (var stream = System.IO.File.OpenRead(image))
+            using var stream = System.IO.File.OpenRead(image);
+            await _api.Media.SaveAsync(new Piranha.Models.StreamMediaContent()
             {
-                await _api.Media.SaveAsync(new Piranha.Models.StreamMediaContent()
-                {
-                    Id = id,
-                    Filename = info.Name,
-                    Data = stream
-                });
-            }
+                Id = id,
+                Filename = info.Name,
+                Data = stream
+            });
         }
 
         // Add blog page
@@ -106,8 +104,8 @@ public class SetupController : Controller
         });
         startPage.Blocks.Add(new ColumnBlock
         {
-            Items = new List<Block>()
-            {
+            Items =
+            [
                 new ImageBlock
                 {
                     Aspect = new SelectField<ImageAspect>
@@ -123,7 +121,7 @@ public class SetupController : Controller
                         "<p class=\"lead\">Build your content with our powerful and modular block editor that allows you to add, rearrange and layout your content with ease.</p>" +
                         "<p>New content blocks can be installed or created in your project and will be available to use across all content functions. Build complex regions for all of the fixed content you want on your content types.</p>"
                 }
-            }
+            ]
         });
         startPage.Blocks.Add(new HtmlBlock
         {

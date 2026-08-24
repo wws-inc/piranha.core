@@ -11,36 +11,39 @@ public class SkiaSharpProcessor : IImageProcessor
     /// 
     /// </summary>
     /// <param name="stream"></param>
-    /// <param name="width"></param>
-    /// <param name="height"></param>
+    /// <param name="onSize"></param>
     /// <exception cref="NullReferenceException"></exception>
     /// <exception cref="ArgumentException"></exception>
-    public void GetSize(Stream stream, out int width, out int height)
+    public void GetSize(Stream stream, Action<int, int> onSize)
     {
-        if(stream.Length< 0) throw new NullReferenceException(nameof(stream)); 
-        if(!stream.CanRead) throw new ArgumentException(nameof(stream));
+        if (stream.Length < 0)
+        {
+            throw new NullReferenceException(nameof(stream));
+        }
+
+        if (!stream.CanRead)
+        {
+            throw new ArgumentException(null, nameof(stream));
+        }
 
         var clonedStream = CloneStream(stream);
 
         using var codec = SKCodec.Create(clonedStream);
 
-        width = codec.Info.Width;
-        height = codec.Info.Height;
+        onSize(codec.Info.Width, codec.Info.Height);
     }
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="bytes"></param>
-    /// <param name="width"></param>
-    /// <param name="height"></param>
-    public void GetSize(byte[] bytes, out int width, out int height)
+    /// <param name="onSize"></param>
+    public void GetSize(byte[] bytes, Action<int, int> onSize)
     {
         using var data = SKData.CreateCopy(bytes);
         using var codec = SKCodec.Create(data);
 
-        width = codec.Info.Width;
-        height = codec.Info.Height;
+        onSize(codec.Info.Width, codec.Info.Height);
     }
 
     /// <summary>
@@ -177,6 +180,7 @@ public class SkiaSharpProcessor : IImageProcessor
                 canvas.RotateDegrees(270);
                 canvas.Translate(-bitmap.Width, 0);
                 break;
+            default: return bitmap;
         }
 
         // Pass SKSamplingOptions.Default to satisfy the non-obsolete DrawBitmap overload
@@ -206,13 +210,17 @@ public class SkiaSharpProcessor : IImageProcessor
     public static Stream CloneStream(Stream source)
     {
         if (source.CanSeek)
+        {
             source.Position = 0;
-
+        }
+            
         var clone = new MemoryStream();
         source.CopyTo(clone);
 
         if (source.CanSeek)
+        {
             source.Position = 0;
+        }
 
         clone.Position = 0;
         return clone;
