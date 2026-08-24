@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.9.12112.369 stable
+VisualStudioVersion = 18.9.12112.369
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{42A64587-89B5-48F2-84D4-85B97F7847F1}"
 EndProject
@@ -70,6 +70,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcWeb", "examples\MvcWeb\MvcWeb.csproj", "{33C2B325-002E-2D6D-47B6-49CA9D46D8DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorWeb", "examples\RazorWeb\RazorWeb.csproj", "{79AE5205-F81E-D65B-AF85-B322E5BCF051}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Piranha.SkiaSharp", "core\Piranha.SkiaSharp\Piranha.SkiaSharp.csproj", "{0DBA76FA-53BA-0406-8EEA-83CBCF41987B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -177,6 +179,10 @@ Global
 		{79AE5205-F81E-D65B-AF85-B322E5BCF051}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79AE5205-F81E-D65B-AF85-B322E5BCF051}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79AE5205-F81E-D65B-AF85-B322E5BCF051}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DBA76FA-53BA-0406-8EEA-83CBCF41987B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DBA76FA-53BA-0406-8EEA-83CBCF41987B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DBA76FA-53BA-0406-8EEA-83CBCF41987B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DBA76FA-53BA-0406-8EEA-83CBCF41987B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -207,6 +213,7 @@ Global
 		{C8EDB2F7-5EF9-6D1B-764E-4404E6ACB2B9} = {DCC52317-BC88-4F0A-923F-C9D9F6D952ED}
 		{33C2B325-002E-2D6D-47B6-49CA9D46D8DB} = {A82A5922-BF05-4DD7-A2C1-DD22F1AD6A57}
 		{79AE5205-F81E-D65B-AF85-B322E5BCF051} = {A82A5922-BF05-4DD7-A2C1-DD22F1AD6A57}
+		{0DBA76FA-53BA-0406-8EEA-83CBCF41987B} = {42A64587-89B5-48F2-84D4-85B97F7847F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CF88AA05-D127-4707-8214-A230F0DA569B}
