@@ -2,8 +2,19 @@
 
 namespace Piranha.SkiaSharp;
 
+/// <summary>
+///  An alternative to ImageSharp as it now require a license
+/// </summary>
 public class SkiaSharpProcessor : IImageProcessor
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
+    /// <exception cref="NullReferenceException"></exception>
+    /// <exception cref="ArgumentException"></exception>
     public void GetSize(Stream stream, out int width, out int height)
     {
         if(stream.Length< 0) throw new NullReferenceException(nameof(stream)); 
@@ -17,6 +28,12 @@ public class SkiaSharpProcessor : IImageProcessor
         height = codec.Info.Height;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="bytes"></param>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
     public void GetSize(byte[] bytes, out int width, out int height)
     {
         using var data = SKData.CreateCopy(bytes);
@@ -26,6 +43,12 @@ public class SkiaSharpProcessor : IImageProcessor
         height = codec.Info.Height;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="dest"></param>
+    /// <param name="width"></param>
     public void Scale(Stream source, Stream dest, int width)
     {
         using var bitmap = SKBitmap.Decode(source);
@@ -39,6 +62,14 @@ public class SkiaSharpProcessor : IImageProcessor
 
         SaveBitmap(resized, dest);
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="dest"></param>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
     public void Crop(Stream source, Stream dest, int width, int height)
     {
         using var bitmap = SKBitmap.Decode(source);
@@ -53,38 +84,50 @@ public class SkiaSharpProcessor : IImageProcessor
         }
     }
 
-public void CropScale(Stream source, Stream dest, int width, int height)
-{
-    using var bitmap = SKBitmap.Decode(source);
-
-    var scale = Math.Max(
-        (float)width / bitmap.Width,
-        (float)height / bitmap.Height);
-
-    var scaledWidth = (int)(bitmap.Width * scale);
-    var scaledHeight = (int)(bitmap.Height * scale);
-
-    using var scaled = bitmap.Resize(
-        new SKImageInfo(scaledWidth, scaledHeight),
-        SKSamplingOptions.Default);
-
-    var cropX = (scaledWidth - width) / 2;
-    var cropY = (scaledHeight - height) / 2;
-
-    using var result = new SKBitmap(width, height);
-
-    using (var canvas = new SKCanvas(result))
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="dest"></param>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
+    public void CropScale(Stream source, Stream dest, int width, int height)
     {
-        var srcRect = SKRect.Create(cropX, cropY, width, height);
-        var destRect = SKRect.Create(0, 0, width, height);
+        using var bitmap = SKBitmap.Decode(source);
 
-        // Pass SKSamplingOptions.Default to fix CS0618
-        canvas.DrawBitmap(scaled, srcRect, destRect, SKSamplingOptions.Default);
+        var scale = Math.Max(
+            (float)width / bitmap.Width,
+            (float)height / bitmap.Height);
+
+        var scaledWidth = (int)(bitmap.Width * scale);
+        var scaledHeight = (int)(bitmap.Height * scale);
+
+        using var scaled = bitmap.Resize(
+            new SKImageInfo(scaledWidth, scaledHeight),
+            SKSamplingOptions.Default);
+
+        var cropX = (scaledWidth - width) / 2;
+        var cropY = (scaledHeight - height) / 2;
+
+        using var result = new SKBitmap(width, height);
+
+        using (var canvas = new SKCanvas(result))
+        {
+            var srcRect = SKRect.Create(cropX, cropY, width, height);
+            var destRect = SKRect.Create(0, 0, width, height);
+
+            // Pass SKSamplingOptions.Default to fix CS0618
+            canvas.DrawBitmap(scaled, srcRect, destRect, SKSamplingOptions.Default);
+        }
+
+        SaveBitmap(result, dest);
     }
 
-    SaveBitmap(result, dest);
-}
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="dest"></param>
     public void AutoOrient(Stream source, Stream dest)
     {
         using var codec = SKCodec.Create(source);
@@ -98,6 +141,12 @@ public void CropScale(Stream source, Stream dest, int width, int height)
         SaveBitmap(oriented, dest);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="bitmap"></param>
+    /// <param name="origin"></param>
+    /// <returns></returns>
     private static SKBitmap ApplyOrientation(
         SKBitmap bitmap,
         SKEncodedOrigin origin)
@@ -130,11 +179,17 @@ public void CropScale(Stream source, Stream dest, int width, int height)
                 break;
         }
 
-        canvas.DrawBitmap(bitmap, 0, 0);
+        // Pass SKSamplingOptions.Default to satisfy the non-obsolete DrawBitmap overload
+        canvas.DrawBitmap(bitmap, 0, 0, SKSamplingOptions.Default);
 
         return SKBitmap.FromImage(surface.Snapshot());
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="bitmap"></param>
+    /// <param name="dest"></param>
     private static void SaveBitmap(SKBitmap bitmap, Stream dest)
     {
         using var image = SKImage.FromBitmap(bitmap);
@@ -143,6 +198,11 @@ public void CropScale(Stream source, Stream dest, int width, int height)
         data.SaveTo(dest);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="source"></param>
+    /// <returns></returns>
     public static Stream CloneStream(Stream source)
     {
         if (source.CanSeek)
