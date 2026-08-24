@@ -38,7 +38,6 @@ builder.AddPiranha(options =>
         o.UsePermission("WebUser", "Web User");
     });
      */
-
     /**
      * Here you can specify the login url for the front end
      * application. This does not affect the login url of
