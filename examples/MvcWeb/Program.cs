@@ -21,7 +21,7 @@ builder.AddPiranha(options =>
     options.UseManager();
 
     options.UseFileStorage(naming: Piranha.Local.FileStorageNaming.UniqueFolderNames);
-    options.UseImageSharp();
+    options.UseSkiaSharp();
     options.UseTinyMCE();
     options.UseMemoryCache();
 
