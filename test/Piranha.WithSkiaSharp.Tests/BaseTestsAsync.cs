@@ -10,18 +10,18 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 using Piranha.Data.EF.SQLite;
 using Piranha.Repositories;
 using Piranha.Services;
 using Piranha.SkiaSharp;
-using Xunit;
 
-namespace Piranha.Tests;
+namespace Piranha.WithSkiaSharp.Tests;
 
 /// <summary>
 /// Base class for using the api.
 /// </summary>
-public abstract class SkiaSharpBaseTestsAsync : IAsyncLifetime
+public abstract class BaseTestsAsync : IAsyncLifetime
 {
     protected IStorage _storage = new Local.FileStorage("uploads/", "~/uploads/");
     protected IImageProcessor _processor = new SkiaSharpProcessor();

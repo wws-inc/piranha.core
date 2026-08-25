@@ -10,10 +10,10 @@
 
 using Xunit;
 
-namespace Piranha.Tests.SkiaSharp;
+namespace Piranha.WithSkiaSharp.Tests.SkiaSharp;
 
 [Collection("Integration tests")]
-public class MediaServiceTests : SkiaSharpBaseTestsAsync
+public class MediaServiceTests : BaseTestsAsync
 {
     private Guid imageId;
 

@@ -70,13 +70,11 @@ public class MediaServiceTests : BaseTestsAsync
     [Fact]
     public async Task GetCropped()
     {
-        using (var api = CreateApi())
-        {
-            var url = await api.Media.EnsureVersionAsync(imageId, 640, 300);
+        using var api = CreateApi();
+        var url = await api.Media.EnsureVersionAsync(imageId, 640, 300);
 
-            Assert.NotNull(url);
-            Assert.Equal($"~/uploads/{imageId}-HLD_Screenshot_01_mech_1080_640x300.png", url);
-        }
+        Assert.NotNull(url);
+        Assert.Equal($"~/uploads/{imageId}-HLD_Screenshot_01_mech_1080_640x300.png", url);
     }
 
     [Fact]

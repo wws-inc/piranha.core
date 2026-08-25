@@ -23,9 +23,9 @@ public class ImageSharpProcessor : IImageProcessor
     /// <param name="onSize"></param>
     public void GetSize(Stream stream, Action<int, int> onSize)
     {
-        var imageInfo = Image.Identify(stream);       
-
         stream.Position = 0;
+
+        var imageInfo = Image.Identify(stream);
 
         onSize(imageInfo.Width, imageInfo.Height);
     }

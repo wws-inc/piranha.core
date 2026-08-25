@@ -390,72 +390,66 @@ internal sealed class MediaService : IMediaService
                 : GetPublicUrl(media, width, height, version.FileExtension);
 
         // Get the image file
-        using (var stream = new MemoryStream())
+        using var stream = new MemoryStream();
+        using var session = await _storage.OpenAsync().ConfigureAwait(false);
+        if (!await session.GetAsync(media, media.Filename, stream).ConfigureAwait(false))
         {
-            using (var session = await _storage.OpenAsync().ConfigureAwait(false))
+            return null;
+        }
+
+        // Reset strem position
+        stream.Position = 0;
+
+        using var output = new MemoryStream();
+        if (height.HasValue)
+        {
+            _processor.CropScale(stream, output, width, height.Value);
+        }
+        else
+        {
+            _processor.Scale(stream, output, width);
+        }
+        output.Position = 0;
+        bool upload = false;
+
+        lock (ScaleMutex)
+        {
+            // We have to make sure we don't scale multiple files
+            // at the same time as it can create index violations.
+            version = query.FirstOrDefault();
+
+            if (version == null)
             {
-                if (!await session.GetAsync(media, media.Filename, stream).ConfigureAwait(false))
+                var info = new FileInfo(media.Filename);
+
+                version = new MediaVersion
                 {
-                    return null;
-                }
+                    Id = Guid.NewGuid(),
+                    Size = output.Length,
+                    Width = width,
+                    Height = height,
+                    FileExtension = info.Extension
+                };
+                media.Versions.Add(version);
 
-                // Reset strem position
-                stream.Position = 0;
+                _repo.Save(media).Wait();
+                RemoveFromCache(media).Wait();
 
-                using (var output = new MemoryStream())
-                {
-                    if (height.HasValue)
-                    {
-                        _processor.CropScale(stream, output, width, height.Value);
-                    }
-                    else
-                    {
-                        _processor.Scale(stream, output, width);
-                    }
-                    output.Position = 0;
-                    bool upload = false;
-
-                    lock (ScaleMutex)
-                    {
-                        // We have to make sure we don't scale multiple files
-                        // at the same time as it can create index violations.
-                        version = query.FirstOrDefault();
-
-                        if (version == null)
-                        {
-                            var info = new FileInfo(media.Filename);
-
-                            version = new MediaVersion
-                            {
-                                Id = Guid.NewGuid(),
-                                Size = output.Length,
-                                Width = width,
-                                Height = height,
-                                FileExtension = info.Extension
-                            };
-                            media.Versions.Add(version);
-
-                            _repo.Save(media).Wait();
-                            RemoveFromCache(media).Wait();
-
-                            upload = true;
-                        }
-                    }
-
-                    if (upload)
-                    {
-                        await session.PutAsync(media, GetResourceName(media, width, height), media.ContentType,
-                                output).ConfigureAwait(false);
-
-                        var info = new FileInfo(media.Filename);
-                        return GetPublicUrl(media, width, height, info.Extension);
-                    }
-                    //When moving this out of its parent method, realized that if the mutex failed, it would just fall back to the null instead of trying to return the issue.
-                    //Added this to ensure that queries didn't just give up if they weren't the first to the party.
-                    return GetPublicUrl(media, width, height, version.FileExtension);
-                }
+                upload = true;
             }
         }
+
+        if (upload)
+        {
+            await session.PutAsync(media, GetResourceName(media, width, height), media.ContentType,
+                    output).ConfigureAwait(false);
+
+            var info = new FileInfo(media.Filename);
+            return GetPublicUrl(media, width, height, info.Extension);
+        }
+        //When moving this out of its parent method, realized that if the mutex failed, it would just fall back to the null instead of trying to return the issue.
+        //Added this to ensure that queries didn't just give up if they weren't the first to the party.
+        return GetPublicUrl(media, width, height, version.FileExtension);
         // If the requested size is equal to the original size, return true
     }
 

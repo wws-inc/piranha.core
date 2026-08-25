@@ -11,7 +11,7 @@
 using Piranha.SkiaSharp;
 using Xunit;
 
-namespace Piranha.Tests.SkiaSharp;
+namespace Piranha.WithSkiaSharp.Tests.SkiaSharp;
 
 public class ProcessorTests
 {

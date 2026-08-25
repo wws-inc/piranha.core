@@ -16,20 +16,8 @@ public class SkiaSharpProcessor : IImageProcessor
     /// <exception cref="ArgumentException"></exception>
     public void GetSize(Stream stream, Action<int, int> onSize)
     {
-        if (stream.Length < 0)
-        {
-            throw new NullReferenceException(nameof(stream));
-        }
-
-        if (!stream.CanRead)
-        {
-            throw new ArgumentException(null, nameof(stream));
-        }
-
         var clonedStream = CloneStream(stream);
-
         using var codec = SKCodec.Create(clonedStream);
-
         onSize(codec.Info.Width, codec.Info.Height);
     }
 
@@ -42,7 +30,6 @@ public class SkiaSharpProcessor : IImageProcessor
     {
         using var data = SKData.CreateCopy(bytes);
         using var codec = SKCodec.Create(data);
-
         onSize(codec.Info.Width, codec.Info.Height);
     }
 
@@ -55,14 +42,11 @@ public class SkiaSharpProcessor : IImageProcessor
     public void Scale(Stream source, Stream dest, int width)
     {
         using var bitmap = SKBitmap.Decode(source);
-
         var ratio = (float)width / bitmap.Width;
         var height = (int)(bitmap.Height * ratio);
-
         using var resized = bitmap.Resize(
             new SKImageInfo(width, height),
             SKSamplingOptions.Default);
-
         SaveBitmap(resized, dest);
     }
 
@@ -76,10 +60,8 @@ public class SkiaSharpProcessor : IImageProcessor
     public void Crop(Stream source, Stream dest, int width, int height)
     {
         using var bitmap = SKBitmap.Decode(source);
-
         var x = Math.Max(0, (bitmap.Width - width) / 2);
         var y = Math.Max(0, (bitmap.Height - height) / 2);
-
         using var cropped = new SKBitmap();
         if (bitmap.ExtractSubset(cropped, SKRectI.Create(x, y, width, height)))
         {
@@ -113,15 +95,11 @@ public class SkiaSharpProcessor : IImageProcessor
         var cropY = (scaledHeight - height) / 2;
 
         using var result = new SKBitmap(width, height);
-
-        using (var canvas = new SKCanvas(result))
-        {
-            var srcRect = SKRect.Create(cropX, cropY, width, height);
-            var destRect = SKRect.Create(0, 0, width, height);
-
-            // Pass SKSamplingOptions.Default to fix CS0618
-            canvas.DrawBitmap(scaled, srcRect, destRect, SKSamplingOptions.Default);
-        }
+        using var canvas = new SKCanvas(result);        
+        var srcRect = SKRect.Create(cropX, cropY, width, height);
+        var destRect = SKRect.Create(0, 0, width, height);
+        // Pass SKSamplingOptions.Default to fix CS0618
+        canvas.DrawBitmap(scaled, srcRect, destRect, SKSamplingOptions.Default);
 
         SaveBitmap(result, dest);
     }
@@ -132,15 +110,12 @@ public class SkiaSharpProcessor : IImageProcessor
     /// <param name="source"></param>
     /// <param name="dest"></param>
     public void AutoOrient(Stream source, Stream dest)
-    {
-        using var codec = SKCodec.Create(source);
-
-        source.Position = 0;
-
-        using var bitmap = SKBitmap.Decode(source);
-
+    {       
+        var clonedSource = CloneStream(source);
+        using var codec = SKCodec.Create(clonedSource);
+        clonedSource = CloneStream(source);
+        using var bitmap = SKBitmap.Decode(clonedSource);
         var oriented = ApplyOrientation(bitmap, codec.EncodedOrigin);
-
         SaveBitmap(oriented, dest);
     }
 
