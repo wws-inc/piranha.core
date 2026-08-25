@@ -230,7 +230,7 @@ public class Blocks : BaseTestsAsync
     [Fact]
     public void QuoteBlockHasTitle()
     {
-        var block = new QuoteBlock()
+        var block = new QuoteBlock
         {
             Body = new Extend.Fields.TextField
             {
