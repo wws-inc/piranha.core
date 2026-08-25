@@ -23,19 +23,15 @@ public class Config : BaseTestsAsync
     {
         return Task.Run(() =>
         {
-            using (var api = CreateApi())
-            {
-
-                using (var config = new Piranha.Config(api)) {
-                    config.ArchivePageSize = 0;
-                    config.CacheExpiresPages = 0;
-                    config.CacheExpiresPosts = 0;
-                    config.CommentsApprove = true;
-                    config.CommentsPageSize = 0;
-                    config.HierarchicalPageSlugs = true;
-                    config.ManagerExpandedSitemapLevels = 0;
-                }
-            }
+            using var api = CreateApi();
+            using var config = new Piranha.Config(api);
+            config.ArchivePageSize = 0;
+            config.CacheExpiresPages = 0;
+            config.CacheExpiresPosts = 0;
+            config.CommentsApprove = true;
+            config.CommentsPageSize = 0;
+            config.HierarchicalPageSlugs = true;
+            config.ManagerExpandedSitemapLevels = 0;
         });
     }
 

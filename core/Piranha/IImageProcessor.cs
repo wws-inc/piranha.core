@@ -15,7 +15,6 @@ namespace Piranha;
 /// </summary>
 public interface IImageProcessor
 {
-
     /// <summary>
     /// Gets an image from the provided stream and returns its size.
     /// </summary>

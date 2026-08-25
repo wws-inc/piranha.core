@@ -303,7 +303,6 @@ public class TypeBuilderTests : BaseTestsAsync
             Assert.Equal("Body", type.Regions[0].Id);
             Assert.NotEmpty(type.Regions[0].Fields);
 
-
             Assert.Equal("Slider", type.Regions[1].Id);
             Assert.Equal("Intro", type.Regions[1].Title);
             Assert.Equal("Default", type.Regions[1].ListTitleField);

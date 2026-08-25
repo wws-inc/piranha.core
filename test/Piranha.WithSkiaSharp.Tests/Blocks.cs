@@ -184,7 +184,6 @@ public class Blocks : BaseTestsAsync
             {
                 Page = new Models.PageInfo
                 {
-
                     Id = Guid.NewGuid(),
                     Title = "Lorem ipsum"
                 }
@@ -213,7 +212,6 @@ public class Blocks : BaseTestsAsync
             {
                 Post = new Models.PostInfo
                 {
-
                     Id = Guid.NewGuid(),
                     Title = "Lorem ipsum"
                 }
