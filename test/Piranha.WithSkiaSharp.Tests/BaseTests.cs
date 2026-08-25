@@ -23,7 +23,6 @@ public abstract class BaseTests : IDisposable
     protected IServiceProvider services = new ServiceCollection()
         .BuildServiceProvider();
 
-
     /// <summary>
     /// Disposes the test class.
     /// </summary>
