@@ -8,11 +8,10 @@
  *
  */
 
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Caching.Distributed;
-using Xunit;
+using Microsoft.Extensions.Caching.Memory;
 using Piranha.Models;
-using Piranha.WithSkiaSharp.Tests;
+using Xunit;
 
 namespace Piranha.WithSkiaSharp.Tests.Services;
 
@@ -39,32 +38,8 @@ public class PageTypeTestsDistributedCache : PageTypeTests
 [Collection("Integration tests")]
 public class PageTypeTests : BaseTestsAsync
 {
-    private readonly List<PageType> pageTypes = new List<PageType>
-    {
-        new PageType
-        {
-            Id = "MyFirstType",
-            Regions = new List<ContentTypeRegion>
-            {
-                new ContentTypeRegion
-                {
-                    Id = "Body",
-                    Fields = new List<ContentTypeField>
-                    {
-                        new ContentTypeField
-                        {
-                            Id = "Default",
-                            Type = "Html"
-                        }
-                    }
-                }
-            }
-        },
-        new PageType
-        {
-            Id = "MySecondType",
-            Regions = new List<ContentTypeRegion>
-            {
+    private static readonly List<ContentTypeRegion> contentTypeRegions =
+            [
                 new ContentTypeRegion
                 {
                     Id = "Body",
@@ -77,99 +52,111 @@ public class PageTypeTests : BaseTestsAsync
                         }
                     }
                 }
-            }
+            ];
+    private readonly List<PageType> pageTypes =
+    [
+        new() {
+            Id = "MyFirstType",
+            Regions =
+            [
+                new ContentTypeRegion
+                {
+                    Id = "Body",
+                    Fields =
+                    [
+                        new() {
+                            Id = "Default",
+                            Type = "Html"
+                        }
+                    ]
+                }
+            ]
         },
-        new PageType
-        {
+        new() {
+            Id = "MySecondType",
+            Regions =
+            [
+                new ContentTypeRegion
+                {
+                    Id = "Body",
+                    Fields =
+                    [
+                        new() {
+                            Id = "Default",
+                            Type = "Text"
+                        }
+                    ]
+                }
+            ]
+        },
+        new() {
             Id = "MyThirdType",
             Regions = new List<ContentTypeRegion>
             {
                 new ContentTypeRegion
                 {
                     Id = "Body",
-                    Fields = new List<ContentTypeField>
-                    {
+                    Fields =
+                    [
                         new ContentTypeField
                         {
                             Id = "Default",
                             Type = "Image"
                         }
-                    }
+                    ]
                 }
             }
         },
-        new PageType
-        {
+        new() {
             Id = "MyFourthType",
             Regions = new List<ContentTypeRegion>
             {
                 new ContentTypeRegion
                 {
                     Id = "Body",
-                    Fields = new List<ContentTypeField>
-                    {
+                    Fields =
+                    [
                         new ContentTypeField
                         {
                             Id = "Default",
                             Type = "String"
                         }
-                    }
+                    ]
                 }
             }
         },
         new PageType
         {
             Id = "MyFifthType",
-            Regions = new List<ContentTypeRegion>
-            {
-                new ContentTypeRegion
-                {
-                    Id = "Body",
-                    Fields = new List<ContentTypeField>
-                    {
-                        new ContentTypeField
-                        {
-                            Id = "Default",
-                            Type = "Text"
-                        }
-                    }
-                }
-            }
+            Regions = contentTypeRegions
         }
-    };
+    ];
 
     public override async Task InitializeAsync()
     {
-        using (var api = CreateApi())
-        {
-            await api.PageTypes.SaveAsync(pageTypes[0]);
-            await api.PageTypes.SaveAsync(pageTypes[3]);
-            await api.PageTypes.SaveAsync(pageTypes[4]);
-        }
+        using var api = CreateApi();
+        await api.PageTypes.SaveAsync(pageTypes[0]);
+        await api.PageTypes.SaveAsync(pageTypes[3]);
+        await api.PageTypes.SaveAsync(pageTypes[4]);
     }
-
     public override async Task DisposeAsync()
     {
-        using (var api = CreateApi())
-        {
-            var pageTypes = await api.PageTypes.GetAllAsync();
+        using var api = CreateApi();
+        var pages = await api.PageTypes.GetAllAsync();
 
-            foreach (var p in pageTypes)
-            {
-                await api.PageTypes.DeleteAsync(p);
-            }
+        foreach (var p in pages)
+        {
+            await api.PageTypes.DeleteAsync(p);
         }
     }
 
     [Fact]
     public void IsCached()
     {
-        using (var api = CreateApi())
-        {
-            Assert.Equal(((Api)api).IsCached,
-                this.GetType() == typeof(PageTypeTestsMemoryCache) ||
-                this.GetType() == typeof(PageTypeTestsDistributedCache));
-        }
+        using var api = CreateApi();
+        Assert.Equal(((Api)api).IsCached,
+            this.GetType() == typeof(PageTypeTestsMemoryCache) ||
+            this.GetType() == typeof(PageTypeTestsDistributedCache));
     }
 
     [Fact]
@@ -219,41 +206,35 @@ public class PageTypeTests : BaseTestsAsync
     [Fact]
     public async Task Update()
     {
-        using (var api = CreateApi())
-        {
-            var model = await api.PageTypes.GetByIdAsync(pageTypes[0].Id);
+        using var api = CreateApi();
+        var model = await api.PageTypes.GetByIdAsync(pageTypes[0].Id);
 
-            Assert.Null(model.Title);
+        Assert.Null(model.Title);
 
-            model.Title = "Updated";
+        model.Title = "Updated";
 
-            await api.PageTypes.SaveAsync(model);
-        }
+        await api.PageTypes.SaveAsync(model);
     }
 
     [Fact]
     public async Task Delete()
     {
-        using (var api = CreateApi())
-        {
-            var model = await api.PageTypes.GetByIdAsync(pageTypes[3].Id);
+        using var api = CreateApi();
+        var model = await api.PageTypes.GetByIdAsync(pageTypes[3].Id);
 
-            Assert.NotNull(model);
+        Assert.NotNull(model);
 
-            await api.PageTypes.DeleteAsync(model);
-        }
+        await api.PageTypes.DeleteAsync(model);
     }
 
     [Fact]
     public async Task DeleteById()
     {
-        using (var api = CreateApi())
-        {
-            var model = await api.PageTypes.GetByIdAsync(pageTypes[4].Id);
+        using var api = CreateApi();
+        var model = await api.PageTypes.GetByIdAsync(pageTypes[4].Id);
 
-            Assert.NotNull(model);
+        Assert.NotNull(model);
 
-            await api.PageTypes.DeleteAsync(model.Id);
-        }
+        await api.PageTypes.DeleteAsync(model.Id);
     }
 }

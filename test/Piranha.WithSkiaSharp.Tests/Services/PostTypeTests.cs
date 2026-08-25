@@ -8,13 +8,12 @@
  *
  */
 
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Caching.Distributed;
-using Xunit;
+using Microsoft.Extensions.Caching.Memory;
 using Piranha.Models;
-using Piranha.WithSkiaSharp.Tests;
+using Xunit;
 
-namespace Piranha.WithSkiaSharp.Tests.Repositories;
+namespace Piranha.WithSkiaSharp.Tests.Services;
 
 [Collection("Integration tests")]
 public class PostTypeTestsMemoryCache : PostTypeTests
@@ -39,6 +38,20 @@ public class PostTypeTestsDistributedCache : PostTypeTests
 [Collection("Integration tests")]
 public class PostTypeTests : BaseTestsAsync
 {
+    private static readonly List<ContentTypeRegion> contentTypeRegions =
+            [
+                new ContentTypeRegion
+                {
+                    Id = "Body",
+                    Fields =
+                    [
+                        new() {
+                            Id = "Default",
+                            Type = "Text"
+                        }
+                    ]
+                }
+            ];
     private readonly List<PostType> postTypes = new List<PostType>
     {
         new PostType
@@ -117,44 +130,27 @@ public class PostTypeTests : BaseTestsAsync
                 }
             }
         },
-        new PostType
-        {
+        new() {
             Id = "MyFifthType",
-            Regions = new List<ContentTypeRegion>
-            {
-                new ContentTypeRegion
-                {
-                    Id = "Body",
-                    Fields = new List<ContentTypeField>
-                    {
-                        new ContentTypeField
-                        {
-                            Id = "Default",
-                            Type = "Text"
-                        }
-                    }
-                }
-            }
+            Regions = contentTypeRegions
         }
     };
 
     public override async Task InitializeAsync()
     {
-        using (var api = CreateApi())
-        {
-            await api.PostTypes.SaveAsync(postTypes[0]);
-            await api.PostTypes.SaveAsync(postTypes[3]);
-            await api.PostTypes.SaveAsync(postTypes[4]);
-        }
+        using var api = CreateApi();
+        await api.PostTypes.SaveAsync(postTypes[0]);
+        await api.PostTypes.SaveAsync(postTypes[3]);
+        await api.PostTypes.SaveAsync(postTypes[4]);
     }
 
     public override async Task DisposeAsync()
     {
         using (var api = CreateApi())
         {
-            var postTypes = await api.PostTypes.GetAllAsync();
+            var posts = await api.PostTypes.GetAllAsync();
 
-            foreach (var p in postTypes)
+            foreach (var p in posts)
             {
                 await api.PostTypes.DeleteAsync(p);
             }
@@ -164,71 +160,59 @@ public class PostTypeTests : BaseTestsAsync
     [Fact]
     public void IsCached()
     {
-        using (var api = CreateApi())
-        {
-            Assert.Equal(((Api)api).IsCached,
-                this.GetType() == typeof(PostTypeTestsMemoryCache) ||
-                this.GetType() == typeof(PostTypeTestsDistributedCache));
-        }
+        using var api = CreateApi();
+        Assert.Equal(((Api)api).IsCached,
+            this.GetType() == typeof(PostTypeTestsMemoryCache) ||
+            this.GetType() == typeof(PostTypeTestsDistributedCache));
     }
 
     [Fact]
     public async Task Add()
     {
-        using (var api = CreateApi())
-        {
-            await api.PostTypes.SaveAsync(postTypes[1]);
-        }
+        using var api = CreateApi();
+        await api.PostTypes.SaveAsync(postTypes[1]);
     }
 
     [Fact]
     public async Task GetAll()
     {
-        using (var api = CreateApi())
-        {
-            var models = await api.PostTypes.GetAllAsync();
+        using var api = CreateApi();
+        var models = await api.PostTypes.GetAllAsync();
 
-            Assert.NotNull(models);
-            Assert.NotEmpty(models);
-        }
+        Assert.NotNull(models);
+        Assert.NotEmpty(models);
     }
 
     [Fact]
     public async Task GetNoneById()
     {
-        using (var api = CreateApi())
-        {
-            var none = await api.PostTypes.GetByIdAsync("none-existing-type");
+        using var api = CreateApi();
+        var none = await api.PostTypes.GetByIdAsync("none-existing-type");
 
-            Assert.Null(none);
-        }
+        Assert.Null(none);
     }
 
     [Fact]
     public async Task GetById()
     {
-        using (var api = CreateApi())
-        {
-            var model = await api.PostTypes.GetByIdAsync(postTypes[0].Id);
+        using var api = CreateApi();
+        var model = await api.PostTypes.GetByIdAsync(postTypes[0].Id);
 
-            Assert.NotNull(model);
-            Assert.Equal(postTypes[0].Regions[0].Fields[0].Id, model.Regions[0].Fields[0].Id);
-        }
+        Assert.NotNull(model);
+        Assert.Equal(postTypes[0].Regions[0].Fields[0].Id, model.Regions[0].Fields[0].Id);
     }
 
     [Fact]
     public async Task Update()
     {
-        using (var api = CreateApi())
-        {
-            var model = await api.PostTypes.GetByIdAsync(postTypes[0].Id);
+        using var api = CreateApi();
+        var model = await api.PostTypes.GetByIdAsync(postTypes[0].Id);
 
-            Assert.Null(model.Title);
+        Assert.Null(model.Title);
 
-            model.Title = "Updated";
+        model.Title = "Updated";
 
-            await api.PostTypes.SaveAsync(model);
-        }
+        await api.PostTypes.SaveAsync(model);
     }
 
     [Fact]

@@ -274,59 +274,56 @@ public class TypeBuilderTests : BaseTestsAsync
             // TODO
             //
             // Tags are currently disabled
-            //
-            // Assert.True(type.UseTags);
+            //            
         }
     }
 
     [Fact]
     public async Task AddComplexContentType()
     {
-        using (var api = CreateApi())
-        {
-            new ContentTypeBuilder(api)
-                .AddType(typeof(ComplexContentType))
-                .Build();
+        using var api = CreateApi();
+        new ContentTypeBuilder(api)
+            .AddType(typeof(ComplexContentType))
+            .Build();
 
-            var group = await api.ContentGroups.GetByIdAsync("MyContent");
-            var type = await api.ContentTypes.GetByIdAsync("Complex");
+        var group = await api.ContentGroups.GetByIdAsync("MyContent");
+        var type = await api.ContentTypes.GetByIdAsync("Complex");
 
-            Assert.NotNull(group);
-            Assert.NotNull(type);
-            Assert.Equal("MyContent", type.Group);
-            Assert.Equal(3, type.Regions.Count);
-            Assert.False(type.UseExcerpt);
-            Assert.False(type.UsePrimaryImage);
-            Assert.False(type.UseCategory);
-            Assert.False(type.UseTags);
+        Assert.NotNull(group);
+        Assert.NotNull(type);
+        Assert.Equal("MyContent", type.Group);
+        Assert.Equal(3, type.Regions.Count);
+        Assert.False(type.UseExcerpt);
+        Assert.False(type.UsePrimaryImage);
+        Assert.False(type.UseCategory);
+        Assert.False(type.UseTags);
 
-            Assert.Equal("Body", type.Regions[0].Id);
-            Assert.NotEmpty(type.Regions[0].Fields);
+        Assert.Equal("Body", type.Regions[0].Id);
+        Assert.NotEmpty(type.Regions[0].Fields);
 
-            Assert.Equal("Slider", type.Regions[1].Id);
-            Assert.Equal("Intro", type.Regions[1].Title);
-            Assert.Equal("Default", type.Regions[1].ListTitleField);
-            Assert.Equal("Add new item", type.Regions[1].ListTitlePlaceholder);
-            Assert.Equal("fa fas-fish", type.Regions[1].Icon);
-            Assert.False(type.Regions[1].ListExpand);
-            Assert.True(type.Regions[1].Collection);
-            Assert.NotEmpty(type.Regions[1].Fields);
+        Assert.Equal("Slider", type.Regions[1].Id);
+        Assert.Equal("Intro", type.Regions[1].Title);
+        Assert.Equal("Default", type.Regions[1].ListTitleField);
+        Assert.Equal("Add new item", type.Regions[1].ListTitlePlaceholder);
+        Assert.Equal("fa fas-fish", type.Regions[1].Icon);
+        Assert.False(type.Regions[1].ListExpand);
+        Assert.True(type.Regions[1].Collection);
+        Assert.NotEmpty(type.Regions[1].Fields);
 
-            Assert.Equal("Content", type.Regions[2].Id);
-            Assert.Equal("Main content", type.Regions[2].Title);
-            Assert.Equal("This is where you enter the main content", type.Regions[2].Description);
-            Assert.False(type.Regions[2].Collection);
-            Assert.Equal(2, type.Regions[2].Fields.Count);
-            Assert.Equal("Title", type.Regions[2].Fields[0].Id);
-            Assert.Equal("This is the title", type.Regions[2].Fields[0].Description);
-            Assert.Equal("Body", type.Regions[2].Fields[1].Id);
-            Assert.Equal("Main Body", type.Regions[2].Fields[1].Title);
+        Assert.Equal("Content", type.Regions[2].Id);
+        Assert.Equal("Main content", type.Regions[2].Title);
+        Assert.Equal("This is where you enter the main content", type.Regions[2].Description);
+        Assert.False(type.Regions[2].Collection);
+        Assert.Equal(2, type.Regions[2].Fields.Count);
+        Assert.Equal("Title", type.Regions[2].Fields[0].Id);
+        Assert.Equal("This is the title", type.Regions[2].Fields[0].Description);
+        Assert.Equal("Body", type.Regions[2].Fields[1].Id);
+        Assert.Equal("Main Body", type.Regions[2].Fields[1].Title);
 
-            Assert.Equal(2, type.CustomEditors.Count);
-            Assert.Equal("Custom Editor", type.CustomEditors[0].Title);
-            Assert.Equal("custom-editor", type.CustomEditors[0].Component);
-            Assert.Equal("fa fas-fish", type.CustomEditors[0].Icon);
-        }
+        Assert.Equal(2, type.CustomEditors.Count);
+        Assert.Equal("Custom Editor", type.CustomEditors[0].Title);
+        Assert.Equal("custom-editor", type.CustomEditors[0].Component);
+        Assert.Equal("fa fas-fish", type.CustomEditors[0].Icon);
     }
 
     [Fact]
@@ -367,38 +364,33 @@ public class TypeBuilderTests : BaseTestsAsync
     [Fact]
     public async Task AddForwardSlashToPageRoutes()
     {
-        using (var api = CreateApi())
-        {
-            new ContentTypeBuilder(api)
-                .AddType(typeof(RoutedPageType))
-                .Build();
+        using var api = CreateApi();
+        new ContentTypeBuilder(api)
+            .AddType(typeof(RoutedPageType))
+            .Build();
 
-            var type = await api.PageTypes.GetByIdAsync("Routed");
-            var types = await api.PageTypes.GetAllAsync();
+        var type = await api.PageTypes.GetByIdAsync("Routed");
 
-            Assert.NotNull(type);
+        Assert.NotNull(type);
 
-            Assert.NotEmpty(type.Routes);
-            Assert.StartsWith("/", type.Routes[0]);
-        }
+        Assert.NotEmpty(type.Routes);
+        Assert.StartsWith("/", type.Routes[0]);
     }
 
     [Fact]
     public async Task AddArchivePageType()
     {
-        using (var api = CreateApi())
-        {
-            new ContentTypeBuilder(api)
-                .AddType(typeof(ArchivePageType))
-                .Build();
+        using var api = CreateApi();
+        new ContentTypeBuilder(api)
+            .AddType(typeof(ArchivePageType))
+            .Build();
 
-            var type = await api.PageTypes.GetByIdAsync("Archive");
+        var type = await api.PageTypes.GetByIdAsync("Archive");
 
-            Assert.NotNull(type);
-            Assert.True(type.IsArchive);
-            Assert.False(type.UseBlocks);
-            Assert.NotEmpty(type.ArchiveItemTypes);
-        }
+        Assert.NotNull(type);
+        Assert.True(type.IsArchive);
+        Assert.False(type.UseBlocks);
+        Assert.NotEmpty(type.ArchiveItemTypes);
     }
 
     [Fact]

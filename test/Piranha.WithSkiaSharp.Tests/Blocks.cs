@@ -26,25 +26,21 @@ public class Blocks : BaseTestsAsync
     /// </summary>
     public override async Task InitializeAsync()
     {
-        using (var api = CreateApi())
+        using var api = CreateApi();
+        Piranha.App.Init(api);
+
+        contentService = new ContentService<Page, PageField, Models.PageBase>(new ContentFactory(_services));
+
+        // Add media
+        using var stream = File.OpenRead("../../../Assets/HLD_Screenshot_01_mech_1080.png");
+        var image1 = new Models.StreamMediaContent
         {
-            Piranha.App.Init(api);
+            Filename = "HLD_Screenshot_01_mech_1080.png",
+            Data = stream
+        };
+        await api.Media.SaveAsync(image1);
 
-            contentService = new ContentService<Page, PageField, Models.PageBase>(new ContentFactory(_services));
-
-            // Add media
-            using (var stream = File.OpenRead("../../../Assets/HLD_Screenshot_01_mech_1080.png"))
-            {
-                var image1 = new Models.StreamMediaContent
-                {
-                    Filename = "HLD_Screenshot_01_mech_1080.png",
-                    Data = stream
-                };
-                await api.Media.SaveAsync(image1);
-
-                image1Id = image1.Id.Value;
-            }
-        }
+        image1Id = image1.Id.Value;
     }
 
     /// <summary>
@@ -80,7 +76,7 @@ public class Blocks : BaseTestsAsync
         {
             var media = await api.Media.GetByIdAsync(image1Id);
 
-            var block = new AudioBlock()
+            var block = new AudioBlock
             {
                 Body = new Extend.Fields.AudioField
                 {
@@ -111,7 +107,7 @@ public class Blocks : BaseTestsAsync
         {
             var media = await api.Media.GetByIdAsync(image1Id);
 
-            var block = new ImageBlock()
+            var block = new ImageBlock
             {
                 Body = new Extend.Fields.ImageField
                 {
@@ -138,7 +134,7 @@ public class Blocks : BaseTestsAsync
     [Fact]
     public void HtmlBlockHasTitle()
     {
-        var block = new HtmlBlock()
+        var block = new HtmlBlock
         {
             Body = new Extend.Fields.HtmlField
             {
@@ -153,7 +149,7 @@ public class Blocks : BaseTestsAsync
     [Fact]
     public void HtmlBlockHasLongTitle()
     {
-        var block = new HtmlBlock()
+        var block = new HtmlBlock
         {
             Body = new Extend.Fields.HtmlField
             {
@@ -178,7 +174,7 @@ public class Blocks : BaseTestsAsync
     [Fact]
     public void PageBlockHasTitle()
     {
-        var block = new Extend.Blocks.PageBlock()
+        var block = new Extend.Blocks.PageBlock
         {
             Body = new Extend.Fields.PageField
             {
@@ -267,7 +263,7 @@ public class Blocks : BaseTestsAsync
     [Fact]
     public void TextBlockHasTitle()
     {
-        var block = new TextBlock()
+        var block = new TextBlock
         {
             Body = new Extend.Fields.TextField
             {
@@ -291,7 +287,7 @@ public class Blocks : BaseTestsAsync
     [Fact]
     public void VideoBlockHasTitle()
     {
-        var block = new VideoBlock()
+        var block = new VideoBlock
         {
             Body = new Extend.Fields.VideoField
             {
@@ -308,22 +304,23 @@ public class Blocks : BaseTestsAsync
 
     [Fact]
     public void DeserializeHtmlBlock() {
-        var blocks = new List<Block>();
-        blocks.Add(new Block
+        var blocks = new List<Block>
         {
-            CLRType = typeof(Extend.Blocks.HtmlBlock).FullName,
-            Fields = new List<BlockField>
-            {
+            new() {
+                CLRType = typeof(Extend.Blocks.HtmlBlock).FullName,
+                Fields =
+            [
                 new BlockField
                 {
                     CLRType = typeof(Extend.Fields.HtmlField).FullName,
                     FieldId = "Body",
                     Value = "<p>Lorem ipsum</p>"
                 }
-            },
-            Created = DateTime.Now,
-            LastModified = DateTime.Now
-        });
+            ],
+                Created = DateTime.Now,
+                LastModified = DateTime.Now
+            }
+        };
 
         var models = contentService.TransformBlocks(blocks);
 
@@ -357,22 +354,22 @@ public class Blocks : BaseTestsAsync
 
     [Fact]
     public void DeserializeImageBlock() {
-        var blocks = new List<Block>();
-        blocks.Add(new Block
+        var blocks = new List<Block>
         {
-            CLRType = typeof(Extend.Blocks.ImageBlock).FullName,
-            Fields = new List<BlockField>
-            {
-                new BlockField
-                {
+            new() {
+                CLRType = typeof(Extend.Blocks.ImageBlock).FullName,
+                Fields =
+            [
+                new() {
                     CLRType = typeof(Extend.Fields.ImageField).FullName,
                     FieldId = "Body",
                     Value = image1Id.ToString()
                 }
-            },
-            Created = DateTime.Now,
-            LastModified = DateTime.Now
-        });
+            ],
+                Created = DateTime.Now,
+                LastModified = DateTime.Now
+            }
+        };
 
         var models = contentService.TransformBlocks(blocks);
 

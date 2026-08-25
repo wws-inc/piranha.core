@@ -44,7 +44,7 @@ public class SetupController : Controller
             images.Add(info.Name, id);
 
             using var stream = System.IO.File.OpenRead(image);
-            await _api.Media.SaveAsync(new Piranha.Models.StreamMediaContent()
+            await _api.Media.SaveAsync(new Piranha.Models.StreamMediaContent
             {
                 Id = id,
                 Filename = info.Name,

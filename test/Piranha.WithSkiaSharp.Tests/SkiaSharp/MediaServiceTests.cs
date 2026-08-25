@@ -19,21 +19,17 @@ public class MediaServiceTests : BaseTestsAsync
 
     public override async Task InitializeAsync()
     {
-        using (var api = CreateApi())
+        using var api = CreateApi();
+        // Add media
+        using var stream = File.OpenRead("../../../Assets/HLD_Screenshot_01_mech_1080.png");
+        var image1 = new Models.StreamMediaContent
         {
-            // Add media
-            using (var stream = File.OpenRead("../../../Assets/HLD_Screenshot_01_mech_1080.png"))
-            {
-                var image1 = new Models.StreamMediaContent()
-                {
-                    Filename = "HLD_Screenshot_01_mech_1080.png",
-                    Data = stream
-                };
-                await api.Media.SaveAsync(image1);
+            Filename = "HLD_Screenshot_01_mech_1080.png",
+            Data = stream
+        };
+        await api.Media.SaveAsync(image1);
 
-                imageId = image1.Id.Value;
-            }
-        }
+        imageId = image1.Id.Value;
     }
     public override async Task DisposeAsync()
     {
@@ -58,13 +54,11 @@ public class MediaServiceTests : BaseTestsAsync
     [Fact]
     public async Task GetScaled()
     {
-        using (var api = CreateApi())
-        {
-            var url = await api.Media.EnsureVersionAsync(imageId, 640);
+        using var api = CreateApi();
+        var url = await api.Media.EnsureVersionAsync(imageId, 640);
 
-            Assert.NotNull(url);
-            Assert.Equal($"~/uploads/{imageId}-HLD_Screenshot_01_mech_1080_640.png", url);
-        }
+        Assert.NotNull(url);
+        Assert.Equal($"~/uploads/{imageId}-HLD_Screenshot_01_mech_1080_640.png", url);
     }
 
     [Fact]

@@ -41,11 +41,11 @@ public class CommentTestsDistributedCache : CommentTests
 [Collection("Integration tests")]
 public class CommentTests : BaseTestsAsync
 {
-    private Guid SITE_ID = Guid.NewGuid();
-    private Guid BLOG_ID = Guid.NewGuid();
-    private Guid NEWS_ID = Guid.NewGuid();
-    private Guid BLOGPOST_ID = Guid.NewGuid();
-    private Guid NEWSPOST_ID = Guid.NewGuid();
+    private readonly Guid SITE_ID = Guid.NewGuid();
+    private readonly Guid BLOG_ID = Guid.NewGuid();
+    private readonly Guid NEWS_ID = Guid.NewGuid();
+    private readonly Guid BLOGPOST_ID = Guid.NewGuid();
+    private readonly Guid NEWSPOST_ID = Guid.NewGuid();
 
     [PageType(Title = "Blog Archive", IsArchive = true, UseBlocks = false)]
     public class BlogArchive : Page<BlogArchive> {}

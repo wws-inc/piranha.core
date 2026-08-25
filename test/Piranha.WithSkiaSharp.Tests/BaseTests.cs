@@ -27,7 +27,7 @@ public abstract class BaseTests : IDisposable
     /// Default constructor.
     /// </summary>
     public BaseTests() {
-        Init();
+        // nothing to add        
     }
 
     /// <summary>

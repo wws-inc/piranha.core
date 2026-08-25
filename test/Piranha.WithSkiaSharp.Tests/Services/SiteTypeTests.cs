@@ -139,24 +139,20 @@ public class SiteTypeTests : BaseTestsAsync
 
     public override async Task InitializeAsync()
     {
-        using (var api = CreateApi())
-        {
-            await api.SiteTypes.SaveAsync(siteTypes[0]);
-            await api.SiteTypes.SaveAsync(siteTypes[3]);
-            await api.SiteTypes.SaveAsync(siteTypes[4]);
-        }
+        using var api = CreateApi();
+        await api.SiteTypes.SaveAsync(siteTypes[0]);
+        await api.SiteTypes.SaveAsync(siteTypes[3]);
+        await api.SiteTypes.SaveAsync(siteTypes[4]);
     }
 
     public override async Task DisposeAsync()
     {
-        using (var api = CreateApi())
-        {
-            var siteTypes = await api.SiteTypes.GetAllAsync();
+        using var api = CreateApi();
+        var sites = await api.SiteTypes.GetAllAsync();
 
-            foreach (var p in siteTypes)
-            {
-                await api.SiteTypes.DeleteAsync(p);
-            }
+        foreach (var p in sites)
+        {
+            await api.SiteTypes.DeleteAsync(p);
         }
     }
 

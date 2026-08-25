@@ -44,14 +44,14 @@ public class PageTestsDistributedCache : PageTests
 [Collection("Integration tests")]
 public class PageTests : BaseTestsAsync
 {
-    public readonly Guid SITE_ID = Guid.NewGuid();
-    public readonly Guid SITE_EMPTY_ID = Guid.NewGuid();
-    public readonly Guid PAGE_1_ID = Guid.NewGuid();
-    public readonly Guid PAGE_2_ID = Guid.NewGuid();
-    public readonly Guid PAGE_3_ID = Guid.NewGuid();
-    public readonly Guid PAGE_7_ID = Guid.NewGuid();
-    public readonly Guid PAGE_8_ID = Guid.NewGuid();
-    public readonly Guid PAGE_DI_ID = Guid.NewGuid();
+    private readonly Guid SITE_ID = Guid.NewGuid();
+    private readonly Guid SITE_EMPTY_ID = Guid.NewGuid();
+    private readonly Guid PAGE_1_ID = Guid.NewGuid();
+    private readonly Guid PAGE_2_ID = Guid.NewGuid();
+    private readonly Guid PAGE_3_ID = Guid.NewGuid();
+    private readonly Guid PAGE_7_ID = Guid.NewGuid();
+    private readonly Guid PAGE_8_ID = Guid.NewGuid();
+    private readonly Guid PAGE_DI_ID = Guid.NewGuid();
 
     public interface IMyService
     {

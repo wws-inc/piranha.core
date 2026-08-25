@@ -34,7 +34,10 @@ public class MediaMgr : BaseTests
     /// Cleans up any possible data and resources
     /// created by the test.
     /// </summary>
-    protected override void Cleanup() { }
+    protected override void Cleanup()
+    { 
+        // nothing to clean up
+    }      
 
     [Fact]
     public void GetDocumentMediaType()
