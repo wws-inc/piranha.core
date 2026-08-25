@@ -40,21 +40,22 @@ public class Fields : BaseTests
     /// Sets up & initializes the tests.
     /// </summary>
     protected override void Init() {
-        using (var api = CreateApi())
-        {
-            Piranha.App.Init(api);
-            Piranha.App.Fields.Register<MyFirstField>();
+        using var api = CreateApi();
+        Piranha.App.Init(api);
+        Piranha.App.Fields.Register<MyFirstField>();
 
-            fields.Register<MyFirstField>();
-            fields.Register<MyThirdField>();
-        }
+        fields.Register<MyFirstField>();
+        fields.Register<MyThirdField>();
     }
 
     /// <summary>
     /// Cleans up any possible data and resources
     /// created by the test.
     /// </summary>
-    protected override void Cleanup() { }
+    protected override void Cleanup() 
+    {
+        throw new NotSupportedException();
+    }
 
     [Fact]
     public void RegisterSelect()

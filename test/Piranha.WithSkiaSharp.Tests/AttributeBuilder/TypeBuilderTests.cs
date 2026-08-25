@@ -247,8 +247,7 @@ public class TypeBuilderTests : BaseTestsAsync
             // TODO
             //
             // Categories are currently disabled
-            //
-            // Assert.True(type.UseCategory);
+            //            
             Assert.False(type.UseTags);
         }
     }

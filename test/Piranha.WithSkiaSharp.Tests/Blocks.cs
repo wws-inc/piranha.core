@@ -202,7 +202,7 @@ public class Blocks : BaseTestsAsync
     [Fact]
     public void PostBlockHasTitle()
     {
-        var block = new Extend.Blocks.PostBlock()
+        var block = new Extend.Blocks.PostBlock
         {
             Body = new Extend.Fields.PostField
             {
