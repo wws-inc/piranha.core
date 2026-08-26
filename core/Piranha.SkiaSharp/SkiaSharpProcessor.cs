@@ -78,8 +78,8 @@ public class SkiaSharpProcessor : IImageProcessor
     /// <param name="height"></param>
     public void CropScale(Stream source, Stream dest, int width, int height)
     {
-        using var bitmap = SKBitmap.Decode(source);
-
+        var clonedSource = CloneStream(source);
+        using var bitmap = SKBitmap.Decode(clonedSource);
         var scale = Math.Max(
             (float)width / bitmap.Width,
             (float)height / bitmap.Height);
@@ -110,13 +110,13 @@ public class SkiaSharpProcessor : IImageProcessor
     /// <param name="source"></param>
     /// <param name="dest"></param>
     public void AutoOrient(Stream source, Stream dest)
-    {       
-        var clonedSource = CloneStream(source);
-        using var codec = SKCodec.Create(clonedSource);
-        clonedSource = CloneStream(source);
-        using var bitmap = SKBitmap.Decode(clonedSource);
+    {
+        var clonedSource1 = CloneStream(source);
+        using var codec = SKCodec.Create(clonedSource1);        
+        var clonedSource2 = CloneStream(clonedSource1);
+        using var bitmap = SKBitmap.Decode(clonedSource2);        
         var oriented = ApplyOrientation(bitmap, codec.EncodedOrigin);
-        SaveBitmap(oriented, dest);
+        SaveBitmap(oriented, dest);        
     }
 
     /// <summary>
@@ -175,6 +175,7 @@ public class SkiaSharpProcessor : IImageProcessor
         using var data = image.Encode(SKEncodedImageFormat.Jpeg, 90);
 
         data.SaveTo(dest);
+        dest.Position = 0;
     }
 
     /// <summary>
